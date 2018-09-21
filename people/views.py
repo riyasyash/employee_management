@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import render
 
 # Create your views here.
@@ -27,30 +28,37 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         return Response(EmployeeSerializer(employee).data)
 
     def list(self, request, *args, **kwargs):
-        alumni = Employee.objects.filter(status=False).all()
-        alumies = EmployeeSerializer(alumni, many=True).data
-        employee = Employee.objects.filter(status=True).all()
-        employees = EmployeeSerializer(employee, many=True).data
-
-        return Response({
-            'alumni':alumies,
-            'employee':employees
-        })
+        # alumni = Employee.objects.filter(status=False).all()
+        # alumies = EmployeeSerializer(alumni, many=True).data
+        # employee = Employee.objects.filter(status=True).all()
+        # employees = EmployeeSerializer(employee, many=True).data
+        #
+        # return Response({
+        #     'alumni':alumies,
+        #     'employee':employees
+        # })
+        if request.GET.get('search_key'):
+            search_key = request.GET.get('search_key')
+            employee = Employee.objects.filter(Q(name__icontains=search_key)|Q(designation__icontains=search_key)).all()
+        else:
+            employee = Employee.objects.all()
+        return Response(EmployeeSerializer(employee,many=True).data)
 
     def retrieve(self, request, *args, **kwargs):
         employee = Employee.objects.get(id=kwargs.get('pk'))
         return Response({
+            'id':employee.id,
             'name':employee.name,
             'designation':employee.designation,
             'joining_date':employee.joining_date,
-            'referred_by':employee.referred_by.name,
+            'referred_by':employee.referred_by.name if employee.referred_by else None,
             'experience':employee.experience,
             'photo_url':employee.photo_url,
             'status':employee.status,
             'dob':employee.dob,
             'contact':{
-                'address':employee.contact.address,
-                'mobile':employee.contact.mobile,
-                'email':employee.contact.email
+                'address':employee.contact.address if employee.contact else None,
+                'mobile':employee.contact.mobile  if employee.contact else None,
+                'email':employee.contact.email  if employee.contact else None
             }
         })
