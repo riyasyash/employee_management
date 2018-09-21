@@ -13,6 +13,6 @@ class ContactSerializer(HyperlinkedModelSerializer):
 class EmployeeSerializer(ModelSerializer):
     class Meta:
         model = Employee
-        fields = ('id','name','dob','designation','experience','joining_date','referred_by','contact','photo_url','status')
+        fields = ('id','name','dob','designation','experience','joining_date','referred_by','contact','photo_url','status','sex')
 
 

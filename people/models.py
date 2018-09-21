@@ -27,6 +27,7 @@ class Employee(models.Model):
     status = models.BooleanField(default=True)
     dob = models.DateField()
     contact = models.OneToOneField(ContactDetails,on_delete=None, null=True)
+    sex = models.CharField(max_length=2, default='M')
 
 class EmployeeTeams(models.Model):
     employee = models.ForeignKey(Employee, on_delete=None)

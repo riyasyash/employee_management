@@ -56,6 +56,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             'photo_url':employee.photo_url,
             'status':employee.status,
             'dob':employee.dob,
+            'sex':employee.sex,
             'contact':{
                 'address':employee.contact.address if employee.contact else None,
                 'mobile':employee.contact.mobile  if employee.contact else None,
