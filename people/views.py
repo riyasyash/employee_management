@@ -63,3 +63,17 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                 'email':employee.contact.email  if employee.contact else None
             }
         })
+
+    def update(self, request, *args, **kwargs):
+        employee = Employee.objects.get(id=kwargs.get('pk'))
+        contact = employee.contact
+        conatct_data = request.data.get('contact')
+        contact_serializer = ContactSerializer(contact,data=conatct_data,partial=True)
+        contact_serializer.is_valid()
+        contact = contact_serializer.save()
+        employee_data = request.data
+        employee_data.update({'contact': contact.id})
+        employee_serializer = EmployeeSerializer(employee,data=employee_data,partial=True)
+        employee_serializer.is_valid()
+        employee = employee_serializer.save()
+        return Response(EmployeeSerializer(employee).data)
